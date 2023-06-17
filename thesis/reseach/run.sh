@@ -1,4 +1,4 @@
-DATA_ROOT=/home/linhdt/Documents/SSIL/thesis/reseach/datasets/data/PascalVOC12
+DATA_ROOT=../kaggle/input/PascalVOC12
 DATASET=voc
 TASK=10-1
 EPOCH=10
