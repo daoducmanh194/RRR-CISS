@@ -1,4 +1,4 @@
-DATA_ROOT=../kaggle/input/pascalvoc12/PascalVOC12
+DATA_ROOT=/kaggle/input/pascalvoc12/PascalVOC12/
 DATASET=voc
 TASK=10-1
 EPOCH=10
