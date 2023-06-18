@@ -71,7 +71,8 @@ class VOCSegmentation(data.Dataset):
             for s in range(cil_step):
                 self.target_cls += get_tasks('voc', self.task, s)
             
-            memory_json = os.path.join(voc_root, 'memory.json')
+            # memory_json = os.path.join(voc_root, 'memory.json')
+            memory_json = '/kaggle/working/RRR-CISS/thesis/reseach/memory.json'
 
             with open(memory_json, "r") as json_file:
                 memory_list = json.load(json_file)
