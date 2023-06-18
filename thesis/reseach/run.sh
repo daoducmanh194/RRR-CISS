@@ -1,7 +1,7 @@
 DATA_ROOT=/kaggle/input/pascalvoc12/PascalVOC12/
 DATASET=voc
 TASK=10-1
-EPOCH=10
+EPOCH=2
 BATCH=16
 LOSS=bce_loss
 LR=0.01

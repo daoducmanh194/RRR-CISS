@@ -38,7 +38,7 @@ def memory_sampling_balanced(args, prev_model):
     
     num_classes = [len(get_tasks(args.dataset, args.task, step)) for step in range(args.task_id+1)]
     prev_num_classes = sum(num_classes[:-1])  # 16
-    memory_json = f'./datasets/data/{args.dataset}/memory.json'
+    memory_json = f'/kaggle/input/pascalvoc12/PascalVOC12/memory.json'
     
     if args.task_id > 1:
         with open(memory_json, "r") as json_file:
