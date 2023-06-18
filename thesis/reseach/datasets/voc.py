@@ -50,7 +50,7 @@ class VOCSegmentation(data.Dataset):
         self.image_set = image_set
         self.transform = transform
         
-        voc_root = './datasets/data/voc'
+        voc_root = '/kaggle/input/pascalvoc12/PascalVOC12'
         image_dir = os.path.join(self.root, 'JPEGImages')
 
         if not os.path.isdir(self.root):
