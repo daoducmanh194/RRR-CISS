@@ -537,7 +537,7 @@ def main(args):
             cur_epochs += 1
             avg_loss.reset()
             avg_time.reset()
-            '''
+            
             with torch.cuda.amp.autocast(enabled=args.amp):
 
                 images = images.to(device, dtype=torch.float32, non_blocking=True)
@@ -580,7 +580,7 @@ def main(args):
             # scaler.update()
 
             # scheduler.step()
-            '''
+            
             
         images = images.to(device, dtype=torch.float32, non_blocking=True)
         labels = labels.to(device, dtype=torch.long, non_blocking=True)
