@@ -6,7 +6,7 @@ BATCH=16
 LOSS=bce_loss
 LR=0.01
 THRESH=0.7
-MEMORY=100
+MEMORY=0
 
 python main.py --data_root ${DATA_ROOT} --model deeplabv3_resnet101 --gpu_id 0 --crop_val --lr ${LR} \
     --batch_size ${BATCH} --train_epoch ${EPOCH}  --loss_type ${LOSS} \
