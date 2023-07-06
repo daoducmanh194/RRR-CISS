@@ -1,6 +1,6 @@
 DATA_ROOT=/kaggle/input/pascalvoc12/pascalvoc12_new/
 DATASET=voc
-TASK=19-1
+TASK=15-1
 EPOCH=10
 BATCH=16
 LOSS=bce_loss

@@ -33,6 +33,13 @@ ADE_CLASSES = [
 ]
 
 
+CITYSCAPES_CLASSES = [
+    "background", "road", "sidewalk", "building", "wall", "fence", "pole",
+    "traffic light", "traffic sign", "vegetation", "terrain", "sky", "person",
+    "rider", "car", "truck", "bus", "train", "motorcycle", "bicycle"
+]
+
+
 class _StreamMetrics(object):
     def __init__(self):
         """ Overridden by subclasses """
@@ -67,6 +74,8 @@ class StreamSegMetrics(_StreamMetrics):
             self.CLASSES = VOC_CLASSES
         elif dataset == 'ade':
             self.CLASSES = ADE_CLASSES
+        elif dataset == 'cityscapes':
+            self.CLASSES = CITYSCAPES_CLASSES
         else:
             NotImplementedError
         

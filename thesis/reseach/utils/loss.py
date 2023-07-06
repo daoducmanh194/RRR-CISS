@@ -55,3 +55,24 @@ class BCEWithLogitsLossWithIgnoreIndex(nn.Module):
         else:
             #return loss
             return loss * targets.sum(dim=1)
+        
+
+class FocalTversky(nn.Module):
+    def __init__(self, alpha=0.5, beta=0.5, gamma=0.5, size_average=True, ignore_index=255):
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
+        self.size_average = size_average
+        self.ignore_index = ignore_index
+
+    def forward(self, inputs, targets):
+        tp = (inputs * targets).sum()
+        fp = ((1-inputs) * targets).sum()
+        fn = (inputs * (1-targets)).sum()
+
+        Tversky = (tp + 1) / (tp + self.alpha * fp + self.beta * fn + 1)
+        focal_tversky_loss = 1 - Tversky ** self.gamma
+        if self.size_average:
+            return focal_tversky_loss.mean()
+        else:
+            return focal_tversky_loss.sum()

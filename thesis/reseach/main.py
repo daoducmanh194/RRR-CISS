@@ -16,13 +16,13 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from datasets.tasks import get_tasks
-from datasets import VOCSegmentation, ADESegmentation
+from datasets import VOCSegmentation, ADESegmentation, CityScapesSegmentation
 from metrics import StreamSegMetrics
 import networks
 import utils
 from utils import ext_transforms as et
 from utils.scheduler import PolyLR, WarmupPolyLR
-from utils.loss import FocalLoss, BCEWithLogitsLossWithIgnoreIndex
+from utils.loss import FocalLoss, BCEWithLogitsLossWithIgnoreIndex, FocalTversky
 from utils.utils import AverageMeter, RAdam, make_directories, print_time
 from utils.memory import memory_sampling_balanced
 
@@ -42,7 +42,7 @@ def get_argparser():
     # Experiments/Datasets Options
     parser.add_argument("--seed", type=int, default=1, help='Seed')
     parser.add_argument("--data_root", type=str, default='/data/DB/VOC2012', help='path to Dataset')
-    parser.add_argument("--dataset", type=str, default='voc', choices=['voc', 'ade'], help='Name of dataset')
+    parser.add_argument("--dataset", type=str, default='voc', choices=['voc', 'ade', 'cityscapes'], help='Name of dataset')
     parser.add_argument("--task", type=str, default='15-1', help='cil task')
     parser.add_argument("--overlap", action='store_true', help='overlap setup (True), disjoint setup (False)')
     parser.add_argument("--num_classes", type=int, default=None, help='num classes (default: None)')
@@ -82,7 +82,7 @@ def get_argparser():
     parser.add_argument("--ckpt", default=None, type=str, help="restore from checkpoint")
 
     parser.add_argument("--loss_type", type=str, default='bce_loss',
-                        choices=['ce_loss', 'focal_loss', 'bce_loss'], help="loss type")
+                        choices=['ce_loss', 'focal_loss', 'bce_loss', 'focal_tversky_loss'], help="loss type")
     parser.add_argument("--weight_decay", type=float, default=1e-4, help='weight decay (default: 1e-4)')
     parser.add_argument("--random_seed", type=int, default=1, help="random seed (default: 1)")
     parser.add_argument("--print_interval", type=int, default=10, help="print interval of loss (default: 10)")
@@ -107,7 +107,7 @@ def get_argparser():
     parser.add_argument("--rrr_upsample", action='store_true', default=False, help="Upsample for RRR")
     parser.add_argument("--rrr_loss", type=str, default='l1', choices=['l1', 'l2'], help="Loss use for RRR")
     parser.add_argument("--rrr_regularizer", type=int, default=100, help="Regulizer for RRR")
-    parser.add_argument("--rrr_lr", type=float, default=0.0005, help="Learning rate for RRR")
+    parser.add_argument("--rrr_lr", type=float, default=0.01, help="Learning rate for RRR")
 
     # Logger Options
     parser.add_argument("--wandb_log", action='store_true', default=True, help='Using logger for logging')
@@ -149,6 +149,8 @@ def get_dataset(args):
         dataset = VOCSegmentation
     elif args.dataset == 'ade':
         dataset = ADESegmentation
+    elif args.dataset == 'cityscapes':
+        dataset = CityScapesSegmentation
     else:
         raise NotImplementedError
         
@@ -513,6 +515,8 @@ def main(args):
     elif args.loss_type == 'bce_loss':
         criterion = BCEWithLogitsLossWithIgnoreIndex(ignore_index=255, 
                                                            reduction='mean')
+    elif args.loss_type == 'focal_tversky_loss':
+        criterion = FocalTversky(ignore_index=255, size_average=True)
         
     scaler = torch.cuda.amp.GradScaler(enabled=args.amp)
     
@@ -537,7 +541,6 @@ def main(args):
             cur_epochs += 1
             avg_loss.reset()
             avg_time.reset()
-            '''
             with torch.cuda.amp.autocast(enabled=args.amp):
 
                 images = images.to(device, dtype=torch.float32, non_blocking=True)
@@ -580,7 +583,6 @@ def main(args):
             # scaler.update()
 
             # scheduler.step()
-            '''
             
         images = images.to(device, dtype=torch.float32, non_blocking=True)
         labels = labels.to(device, dtype=torch.long, non_blocking=True)
