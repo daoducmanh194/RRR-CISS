@@ -5,7 +5,7 @@ EPOCH=10
 BATCH=16
 LOSS=bce_loss
 LR=0.01
-THRESH=0.0
+THRESH=0.3
 MEMORY=0
 
 python main.py --data_root ${DATA_ROOT} --model deeplabv3_resnet101 --gpu_id 0 --crop_val --lr ${LR} \
